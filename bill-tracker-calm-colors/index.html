@@ -4450,6 +4450,7 @@ window.DEMO = {"limit":15,"url":""};
   function yedekKaydet() { App.indir((YEDEK_AD + "-backup-") + App.bugun() + ".json", B.disaAktar(App.durum), "application/json"); }
   /** Yedek metnini dogrular (yedek dosyasi ve Transfer code ayni yol): gecerli durum ya da null. Durum DEGISMEZ. */
   function veriHazirla(metin) {
+    App.demoRed = null;
     try {
       var yeni = Object.assign(App.varsayilan(), B.iceAktar(String(metin)));
       yeni.ayarlar = Object.assign(App.varsayilan().ayarlar, yeni.ayarlar || {});
@@ -4462,6 +4463,11 @@ window.DEMO = {"limit":15,"url":""};
     App.ani(); App.durum = yeni; App.durum.kuruldu = true; App.uyari = ""; App.kaydet(); App.ayarlariUygula(); App.yenile();
     App.bildirim(mesaj, true);
   }
+  /** Demo surumunde ret nedeni belirsiz olabilir (kotu dosya mi, demo siniri mi): durustce ikisini de soyler. */
+  function demoRetMesaji(genel) {
+    if (App.demoRed) { var m = App.demoRed; App.demoRed = null; return m; }
+    return window.DEMO ? "Could not restore. Either this file is not a backup from this app, or it holds more than the free demo allows (the full version has no limit). Nothing was changed." : genel;
+  }
   function yedekYukle(dosya) {
     var r = new FileReader();
     r.onload = function () {
@@ -4469,7 +4475,7 @@ window.DEMO = {"limit":15,"url":""};
         var yeni = veriHazirla(String(r.result));
         if (!yeni) throw new Error("invalid");
         veriUygula(yeni, App.t("ayar.yedek.tamam", "Backup restored."));
-      } catch (e) { App.bildirim(BORC ? App.t("ayar.yedek.hata.borc", "Could not restore: this file is not a valid backup from this app. Nothing was changed.") : App.t("ayar.yedek.hata", "Could not restore: this file is not a backup from this planner.")); }
+      } catch (e) { App.bildirim(demoRetMesaji(BORC ? App.t("ayar.yedek.hata.borc", "Could not restore: this file is not a valid backup from this app. Nothing was changed.") : App.t("ayar.yedek.hata", "Could not restore: this file is not a backup from this planner."))); }
     };
     r.readAsText(dosya);
   }
@@ -4572,6 +4578,7 @@ window.DEMO = {"limit":15,"url":""};
   }
   /** Kod metnini coz + dogrula: {durum} ya da {hata: anahtar}. Durum DEGISMEZ. */
   App.transferCoz = function (kod) {
+    App.demoRed = null;
     var c = window.Aktar.coz(kod, URUN_KOD);
     if (c.hata) return { hata: c.hata };
     var yeni = veriHazirla(c.metin);
@@ -4595,7 +4602,7 @@ window.DEMO = {"limit":15,"url":""};
     App.dialog({ baslik: App.t("transfer.yapistir", "Paste a transfer code"), govde: govde, tamam: App.t("transfer.denetle", "Check code"), tamamFn: function () {
       if (hazir) { veriUygula(hazir, App.t("transfer.tamam", "Your data is here. You can undo this right now.")); return; }
       var r = App.transferCoz(alan.value);
-      if (r.hata) { var h = TRANSFER_HATA[r.hata] || TRANSFER_HATA.bozuk; mesaj.className = "transfer-hata"; mesaj.textContent = App.t(h[0], h[1]); return false; }
+      if (r.hata) { var h = TRANSFER_HATA[r.hata] || TRANSFER_HATA.bozuk; mesaj.className = "transfer-hata"; mesaj.textContent = r.hata === "gecersiz" ? demoRetMesaji(App.t(h[0], h[1])) : App.t(h[0], h[1]); return false; }
       hazir = r.durum; mesaj.className = "transfer-tamam";
       mesaj.textContent = App.t("transfer.onay", "The code is complete and checked. Using it replaces everything in this app on this device. You can undo right after.");
       if (dugme) dugme.textContent = App.t("transfer.uygula", "Replace my data");
@@ -6471,6 +6478,8 @@ window.DEMO = {"limit":15,"url":""};
   App.urunVeriVarMi = function () {
     if (App.urunVeriVar) return !!App.urunVeriVar();
     var d = App.durum, v = App.varsayilan();
+    // ana butce urunu (window.URUN yok): ilk kurulumda yalniz bakiye / odeme gunu girilmis olabilir, bu da kullanici verisidir
+    if (!window.URUN && (d.bakiyeKurus || d.bakiyeTarihi || JSON.stringify(d.donem) !== JSON.stringify(v.donem))) return true;
     if (App.urunVarsayilan) Object.assign(v, App.urunVarsayilan()); // App.varsayilan urun alanlarini icermez (gezi: kisiler [Me])
     return Object.keys(d).some(function (k) { return !DISI[k] && doluFark(d[k], v[k]); });
   };
