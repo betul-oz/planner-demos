@@ -7537,8 +7537,8 @@ return { botanik: sanatB, retro: sanatD, seffaf: tr, plaka: plakaB, vinyet: viny
     return k < 0 ? null : k;
   }
   function tablo(baslik, satirlar, aciklama) {
-    var th = "text-align:right;padding:6px 4px;font-size:.7rem;letter-spacing:.02em;text-transform:uppercase;color:var(--soluk);border-bottom:2px solid var(--cizgi)";
-    var td = "text-align:right;padding:6px 4px;border-bottom:1px dotted var(--cizgi);font-variant-numeric:tabular-nums;vertical-align:top";
+    var th = "text-align:right;padding:6px 3px;font-size:.64rem;letter-spacing:0;text-transform:uppercase;color:var(--soluk);border-bottom:2px solid var(--cizgi)";
+    var td = "text-align:right;padding:6px 4px;border-bottom:1px dotted var(--cizgi);font-variant-numeric:tabular-nums;vertical-align:top;white-space:nowrap";
     var tb = el("table", { style: "width:100%;border-collapse:collapse;font-size:.88rem" });
     if (aciklama) tb.appendChild(el("caption", { style: "text-align:left;color:var(--soluk);font-size:.85rem;padding-bottom:6px", metin: aciklama }));
     var tr = el("tr");
@@ -7917,7 +7917,7 @@ return { botanik: sanatB, retro: sanatD, seffaf: tr, plaka: plakaB, vinyet: viny
   }
   function tablo(baslik, satirlar) {
     var th = "text-align:right;padding:6px 4px;font-size:.7rem;letter-spacing:.02em;text-transform:uppercase;color:var(--soluk);border-bottom:2px solid var(--cizgi)";
-    var td = "text-align:right;padding:6px 4px;border-bottom:1px dotted var(--cizgi);font-variant-numeric:tabular-nums;vertical-align:top";
+    var td = "text-align:right;padding:6px 4px;border-bottom:1px dotted var(--cizgi);font-variant-numeric:tabular-nums;vertical-align:top;white-space:nowrap";
     var tb = el("table", { style: "width:100%;border-collapse:collapse;font-size:.88rem" });
     var tr = el("tr");
     baslik.forEach(function (b, i) { tr.appendChild(el("th", { scope: "col", style: th + (i === 0 ? ";text-align:left" : ""), metin: b })); });
