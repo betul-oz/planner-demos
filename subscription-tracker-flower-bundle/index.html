@@ -3472,7 +3472,7 @@ window.CEVIRI = {"es":{"nav.plan":"Plan diario","nav.rout":"Rutinas","nav.pause"
 window.PAKET = "cicek"; window.PAKET_TEMALAR = ["gul","ayicegi","lagun","glisin","sarmasik","narenciye"];
 window.URUN = "abone"; window.URUN_AD = "Subscription Tracker"; window.URUN_ANA = "dash";
 window.FOTO = {};
-window.DEMO = {"limit":15,"url":""};
+window.DEMO = {"limit":15,"url":"","magaza":"SmallStepsTemplates"};
 /* Transfer code (cihazlar arasi aktarim, sunucusuz, kutuphanesiz).
  * Bicim:  PLN2.<urun>.<bayt uzunlugu>.<crc32 hex8>.<base64url(deflate-raw(UTF-8, bosluksuz JSON))>   (yeni, sikistirilmis)
  *         PLN1.<urun>.<bayt uzunlugu>.<crc32 hex8>.<base64url(UTF-8, bosluksuz JSON)>                (eski kodlar: hala cozulur)
@@ -5412,6 +5412,14 @@ window.DEMO = {"limit":15,"url":""};
       // kisisellestirme karti (ad, cumle, emoji, rozet, hiza, vurgu rengi, yogunluk, hareket azalt): v2/kisisel/kisisel.js
       var kartKisisel = App.kisiselKart ? App.kisiselKart() : null;
       kok.appendChild(el("div", { class: "izgara ikili" }, kartKisisel, kartDil, kartGor, BORC ? null : kartMaas, BORC ? null : kartHizli, kartYaz, kartVeri, kartDiger));
+
+      // marka imzasi (ozel ad, cevrilmez): SmallStepsTemplates mark'i, sade ve en altta
+      var imza = el("div", { class: "marka-imza", style: "display:flex;align-items:center;justify-content:center;gap:10px;margin:28px 0 8px;opacity:.85" });
+      var simge = el("span", { "aria-hidden": "true", style: "display:inline-flex;width:34px;height:34px;border-radius:50%;background:#fbf1e3;box-shadow:0 0 0 1px rgba(0,0,0,.08)" });
+      simge.innerHTML = '<svg viewBox="0 0 120 120" width="34" height="34"><rect x="28" y="66" width="17" height="24" rx="5" fill="#8db59b"/><rect x="50" y="48" width="17" height="42" rx="5" fill="#2f6b50"/><rect x="72" y="30" width="17" height="60" rx="5" fill="#1f4d3a"/><rect x="24" y="94" width="72" height="3" rx="1.5" fill="#c46e62"/><path d="M80.5 30V19" stroke="#2f6b50" stroke-width="2" stroke-linecap="round"/><path d="M80.5 20C77 20 74 17 74 13c3 0 6 2 6.5 7z" fill="#8db59b"/><path d="M80.5 20c3.5 0 6.5-3 6.5-7-3 0-6 2-6.5 7z" fill="#2f6b50"/></svg>';
+      imza.appendChild(simge);
+      imza.appendChild(el("span", { class: "alt", metin: "SmallStepsTemplates · © 2026" }));
+      kok.appendChild(imza);
     } });
 })();
 
